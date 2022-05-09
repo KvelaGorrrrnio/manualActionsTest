@@ -3,8 +3,12 @@ name: Build Feature Branch
 on: 
   workflow_dispatch:
     inputs:
+      environment:
+        description: 'Build from branch:'
+        type: environment
+        required: true
       buildTag:
-        description: 'Build Tag'
+        description: 'Build tag:'
         required: true
 
 jobs:
