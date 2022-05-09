@@ -15,4 +15,5 @@ jobs:
         echo "Build Tag: ${{ github.event.inputs.buildTag }}"
         echo "Branch: ${GITHUB_REF##*/} ($GITHUB_REF)"
         pwd
+        ls
         cat data.txt
