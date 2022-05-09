@@ -1,0 +1,15 @@
+name: Build Feature Branch
+
+on: 
+  workflow_dispatch:
+    inputs:
+      buildTag:
+        description: 'Build Tag'
+        required: true
+
+jobs:
+  printInputs:
+    runs-on: ubuntu-latest
+    steps:
+    - run: |
+        echo "Build Tag: ${{ github.event.inputs.buildTag }}"
