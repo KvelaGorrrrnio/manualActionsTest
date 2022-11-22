@@ -1,0 +1,19 @@
+name: Increment
+on:
+  workflow_dispatch:
+    inputs:
+      incrementType:
+        description: 'Increment type:'
+        required: true
+        options:
+          - 'major'
+          - 'minor'
+          - 'patch'
+jobs:
+  increment:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - run: yarn version ${{ github.inputs.incrementType }}
+      - name: Commit & Push changes
+        uses: actions-js/push@master
+
