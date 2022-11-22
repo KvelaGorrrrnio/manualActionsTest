@@ -4,6 +4,7 @@ on:
     inputs:
       incrementType:
         description: 'Increment type:'
+        type: 'choice'
         required: true
         options:
           - 'major'
