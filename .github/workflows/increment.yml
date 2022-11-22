@@ -14,6 +14,8 @@ jobs:
   increment:
     runs-on: 'ubuntu-latest'
     steps:
+      - uses: actions/checkout@v3
+      - run: npm i -g yarn
       - run: yarn install
       - run: yarn version ${{ github.inputs.incrementType }}
       - name: Commit & Push changes
