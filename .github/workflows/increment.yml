@@ -18,8 +18,6 @@ jobs:
       - run: npm i -g yarn
       - run: yarn install
       - run: yarn version ${{ github.inputs.incrementType }}
-      - name: Commit & Push changes
-        uses: actions-js/push@master
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
 
