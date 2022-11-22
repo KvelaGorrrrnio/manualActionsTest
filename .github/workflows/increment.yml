@@ -14,6 +14,7 @@ jobs:
   increment:
     runs-on: 'ubuntu-latest'
     steps:
+      - run: yarn install
       - run: yarn version ${{ github.inputs.incrementType }}
       - name: Commit & Push changes
         uses: actions-js/push@master
