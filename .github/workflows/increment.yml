@@ -15,9 +15,8 @@ jobs:
     runs-on: 'ubuntu-latest'
     steps:
       - uses: actions/checkout@v3
-      - run: npm i -g yarn
-      - run: yarn install
       - run: yarn version ${{ github.inputs.incrementType }}
-      - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+      - uses: actions-js/push@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
 
