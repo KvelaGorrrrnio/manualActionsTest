@@ -46,8 +46,8 @@ runs:
 
     - name: 'Try to automerge'
       if: steps.check_if_is_ahead.outputs.is_ahead == 'true'
-      run: gh pr merge "$TARGET_BRANCH" --auto --merge --admin
+      run: gh pr merge "$SOURCE_BRANCH" --auto --merge
       env:
-        TARGET_BRANCH: ${{ inputs.target_branch }}
-        GH_TOKEN: ${{ secrets.GITHUB_ADMIN_TOKEN }}
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
