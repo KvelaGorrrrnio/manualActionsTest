@@ -27,7 +27,7 @@ runs:
       id: 'check_if_is_ahead'
       run: |
         rev_count=$(git rev-list $TARGET_BRANCH..$SOURCE_BRANCH --count)
-        if [ $rev_count -ge 0 ]; then is_ahead="true"; else is_ahead="false"; fi
+        if [ $rev_count -gt 0 ]; then is_ahead="true"; else is_ahead="false"; fi
         echo "is_ahead=$is_ahead" >> $GITHUB_OUTPUT
       env:
         SOURCE_BRANCH: ${{ inputs.source_branch }}
