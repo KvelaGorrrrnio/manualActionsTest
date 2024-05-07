@@ -1,0 +1,53 @@
+name: 'Automerge'
+description: 'Creates a PR from source branch to target branch and tries to automerge.'
+
+inputs:
+  source_branch:
+    description: 'The source branch to merge changes from.'
+    required: true
+  target_branch:
+    description: 'The target branch to merge changes into.'
+    required: true
+  pr_title:
+    description: 'The title of the PR created.'
+    required: true
+  pr_description:
+    description: 'The description of the PR created.'
+    required: true
+  github_access_token:
+    description: 'The access token used for interacting with GitHub. Default is GITHUB_TOKEN.'
+    required: false
+    default: ${{ github.token }}
+
+
+runs:
+  using: 'composite'
+  steps:
+    - name: 'Check if source is ahead of target branch'
+      id: 'check_if_is_ahead'
+      run: |
+        rev_count=$(git rev-list $TARGET_BRANCH..$SOURCE_BRANCH --count)
+        if [ $rev_count -gt 0 ]; then is_ahead="true"; else is_ahead="false"; fi
+        echo "is_ahead=$is_ahead" >> $GITHUB_OUTPUT
+      env:
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        TARGET_BRANCH: ${{ inputs.target_branch }}
+
+    - name: 'Create or update PR'
+      if: steps.check_if_is_ahead.outputs.is_ahead == 'true'
+      run: |
+        gh_pr_up() { gh pr create $* || gh pr edit $* }
+        gh_pr_up --head "$SOURCE_BRANCH" --base "$TARGET_BRANCH" --title "$PR_TITLE" --body "$PR_DESCRIPTION"
+      env:
+        PR_TITLE: ${{ inputs.pr_title }}
+        PR_DESCRIPTION: ${{ inputs.pr_description }}
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        TARGET_BRANCH: ${{ inputs.target_branch }}
+
+    - name: 'Try to automerge'
+      if: steps.check_if_is_ahead.outputs.is_ahead == 'true'
+      run: gh pr merge "$SOURCE_BRANCH" --auto --merge
+      env:
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+

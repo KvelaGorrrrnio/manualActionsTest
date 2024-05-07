@@ -1,0 +1,22 @@
+name: Increment
+on:
+  workflow_dispatch:
+    inputs:
+      incrementType:
+        description: 'Increment type:'
+        type: 'choice'
+        required: true
+        options:
+          - 'major'
+          - 'minor'
+          - 'patch'
+jobs:
+  increment:
+    runs-on: 'ubuntu-latest'
+    steps:
+      - uses: actions/checkout@v3
+      - run: yarn
+      - run: yarn version ${{ github.event.inputs.incrementType }}
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+
