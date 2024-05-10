@@ -25,6 +25,7 @@ runs:
   steps:
     - name: 'Check if source is ahead of target branch'
       id: 'check_if_is_ahead'
+      shell: 'bash'
       run: |
         rev_count=$(git rev-list $TARGET_BRANCH..$SOURCE_BRANCH --count)
         if [ $rev_count -gt 0 ]; then is_ahead="true"; else is_ahead="false"; fi
@@ -35,6 +36,7 @@ runs:
 
     - name: 'Create or update PR'
       if: steps.check_if_is_ahead.outputs.is_ahead == 'true'
+      shell: 'bash'
       run: |
         gh_pr_up() { gh pr create $* || gh pr edit $* }
         gh_pr_up --head "$SOURCE_BRANCH" --base "$TARGET_BRANCH" --title "$PR_TITLE" --body "$PR_DESCRIPTION"
@@ -46,6 +48,7 @@ runs:
 
     - name: 'Enable auto merge for PR'
       if: steps.check_if_is_ahead.outputs.is_ahead == 'true' && github.event.pull_request.auto_merge
+      shell: 'bash'
       run: gh pr merge "$SOURCE_BRANCH" --auto --merge
       env:
         SOURCE_BRANCH: ${{ inputs.source_branch }}
@@ -53,6 +56,7 @@ runs:
 
     - name: 'Try to merge'
       if: steps.check_if_is_ahead.outputs.is_ahead == 'true' && !github.event.pull_request.auto_merge
+      shell: 'bash'
       run: gh pr merge "$SOURCE_BRANCH" --merge
       env:
         SOURCE_BRANCH: ${{ inputs.source_branch }}
