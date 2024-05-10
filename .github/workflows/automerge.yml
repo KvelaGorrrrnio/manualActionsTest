@@ -1,0 +1,58 @@
+name: 'Update downstream environment branches'
+run-name: 'Update downstream environment branches'
+on:
+  schedule:
+    - cron: '0 0 * * 1-5' # At 00:00, Monday through Friday
+  workflow_dispatch:
+
+permissions:
+  contents: 'write'
+
+jobs:
+  merge-master-to-staging:
+    name: 'Create merge PR from master to staging.'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout master'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: 'master'
+
+      - name: 'Create new branch'
+        run: |
+          git config --global user.name 'Sofie Bot'
+          git config --global user.email 'sofie-bot@users.noreply.github.com'
+          git switch -c automerge/master-to-staging
+          git push -u origin automerge/master-to-staging
+
+      - name: 'Create automerge PR'
+        uses: './.github/actions/branch-sync'
+        with:
+          source_branch: 'automerge/master-to-staging'
+          target_branch: 'staging'
+          pr_title: 'Automerge `master` into `staging`'
+          pr_description: 'Move changes from `master` to `staging`.'
+
+  merge-staging-to-develop:
+    name: 'Create merge PR from staging to develop.'
+    runs-on: 'ubuntu-latest'
+    steps:
+      - name: 'Checkout staging'
+        uses: 'actions/checkout@v4'
+        with:
+          ref: 'staging'
+
+      - name: 'Create new branch'
+        run: |
+          git config --global user.name 'Sofie Bot'
+          git config --global user.email 'sofie-bot@users.noreply.github.com'
+          git switch -c automerge/staging-to-develop
+          git push -u origin automerge/staging-to-develop
+
+      - name: 'Create automerge PR'
+        uses: './.github/actions/branch-sync'
+        with:
+          source_branch: 'automerge/staging-to-develop'
+          target_branch: 'develop'
+          pr_title: 'Automerge `staging` into `develop`'
+          pr_description: 'Move changes from `staging` to `develop`.'

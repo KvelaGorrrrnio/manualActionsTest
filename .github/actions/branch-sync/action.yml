@@ -14,7 +14,7 @@ inputs:
   pr_description:
     description: 'The description of the PR created.'
     required: true
-  github_access_token:
+  github_token:
     description: 'The access token used for interacting with GitHub. Default is GITHUB_TOKEN.'
     required: false
     default: ${{ github.token }}
@@ -30,8 +30,8 @@ runs:
         if [ $rev_count -gt 0 ]; then is_ahead="true"; else is_ahead="false"; fi
         echo "is_ahead=$is_ahead" >> $GITHUB_OUTPUT
       env:
-        SOURCE_BRANCH: ${{ inputs.source_branch }}
-        TARGET_BRANCH: ${{ inputs.target_branch }}
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        TARGET_BRANCH: ${{ inputs.target_branch }}
 
     - name: 'Create or update PR'
       if: steps.check_if_is_ahead.outputs.is_ahead == 'true'
@@ -41,13 +41,19 @@ runs:
       env:
         PR_TITLE: ${{ inputs.pr_title }}
         PR_DESCRIPTION: ${{ inputs.pr_description }}
-        SOURCE_BRANCH: ${{ inputs.source_branch }}
-        TARGET_BRANCH: ${{ inputs.target_branch }}
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        TARGET_BRANCH: ${{ inputs.target_branch }}
 
-    - name: 'Try to automerge'
-      if: steps.check_if_is_ahead.outputs.is_ahead == 'true'
+    - name: 'Enable auto merge for PR'
+      if: steps.check_if_is_ahead.outputs.is_ahead == 'true' && github.event.pull_request.auto_merge
       run: gh pr merge "$SOURCE_BRANCH" --auto --merge
       env:
-        SOURCE_BRANCH: ${{ inputs.source_branch }}
-        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        GH_TOKEN: ${{ inputs.github_token }}
 
+    - name: 'Try to merge'
+      if: steps.check_if_is_ahead.outputs.is_ahead == 'true' && !github.event.pull_request.auto_merge
+      run: gh pr merge "$SOURCE_BRANCH" --merge
+      env:
+        SOURCE_BRANCH: ${{ inputs.source_branch }}
+        GH_TOKEN: ${{ inputs.github_token }}
