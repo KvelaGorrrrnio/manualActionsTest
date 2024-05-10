@@ -23,9 +23,7 @@ jobs:
         run: |
           git config --global user.name 'Sofie Bot'
           git config --global user.email 'sofie-bot@users.noreply.github.com'
-          git fetch --all && git pull --all
-          git switch -c automerge/main-to-staging || git switch automerge/main-to-staging && git merge main
-          git push -u origin automerge/main-to-staging
+          git switch automerge/main-to-staging && git merge main && git push || git switch -c automerge/main-to-staging && git push -u origin automerge/main-to-staging
 
       - name: 'Create automerge PR'
         uses: './.github/actions/branch-sync'
@@ -49,9 +47,7 @@ jobs:
         run: |
           git config --global user.name 'Sofie Bot'
           git config --global user.email 'sofie-bot@users.noreply.github.com'
-          git fetch --all && git pull --all
-          git switch -c automerge/staging-to-develop || git switch automerge/staging-to-develop && git merge staging
-          git push -u origin automerge/staging-to-develop
+          git switch automerge/staging-to-develop && git merge main && git push || git switch -c automerge/staging-to-develop && git push -u origin automerge/staging-to-develop
 
       - name: 'Create automerge PR'
         uses: './.github/actions/branch-sync'
