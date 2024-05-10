@@ -19,6 +19,7 @@ jobs:
           ref: 'main'
 
       - name: 'Create new branch'
+        shell: 'bash'
         run: |
           git config --global user.name 'Sofie Bot'
           git config --global user.email 'sofie-bot@users.noreply.github.com'
@@ -43,6 +44,7 @@ jobs:
           ref: 'staging'
 
       - name: 'Create new branch'
+        shell: 'bash'
         run: |
           git config --global user.name 'Sofie Bot'
           git config --global user.email 'sofie-bot@users.noreply.github.com'
