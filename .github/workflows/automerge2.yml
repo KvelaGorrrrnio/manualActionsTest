@@ -29,7 +29,7 @@ jobs:
             pr_body: |
               Branch _main_ has changes not on _staging_ branch.
               Merging this pull request will apply the changes to the _staging_ branch.
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+            github_token: ${{ github.token }}
 
   merge-staging-to-develop:
     name: 'Create merge PR from staging to develop'
@@ -51,4 +51,4 @@ jobs:
           pr_body: |
             Branch _staging_ has changes not on _develop_ branch.
             Merging this pull request will apply the changes to the _develop_ branch.
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ github.token }}
